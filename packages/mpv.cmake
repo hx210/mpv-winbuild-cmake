@@ -12,6 +12,7 @@ ExternalProject_Add(mpv
         libjpeg
         libpng
         luajit
+        luasocket
         rubberband
         uchardet
         openal-soft
@@ -85,6 +86,7 @@ ExternalProject_Add_Step(mpv copy-binary
     COMMAND ${CMAKE_COMMAND} -E copy ${MINGW_INSTALL_PREFIX}/bin/lua51.dll   ${CMAKE_CURRENT_BINARY_DIR}/mpv-package/lua51.dll
     COMMAND ${EXEC} ${TARGET_ARCH}-strip -s ${CMAKE_CURRENT_BINARY_DIR}/mpv-package/lua51.dll
     COMMAND ${CMAKE_COMMAND} -E copy ${MINGW_INSTALL_PREFIX}/bin/luajit.exe  ${CMAKE_CURRENT_BINARY_DIR}/mpv-package/luajit.exe
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${MINGW_INSTALL_PREFIX}/lua/5.1 ${CMAKE_CURRENT_BINARY_DIR}/mpv-package
     COMMAND ${CMAKE_COMMAND} -E copy ${MINGW_INSTALL_PREFIX}/bin/lua51.dll   ${CMAKE_CURRENT_BINARY_DIR}/mpv-dev/lua51.dll
     COMMAND ${CMAKE_COMMAND} -E copy_directory ${MINGW_INSTALL_PREFIX}/include/luajit-2.1  ${CMAKE_CURRENT_BINARY_DIR}/mpv-dev/include/luajit-2.1
     COMMAND ${CMAKE_COMMAND} -E copy ${MINGW_INSTALL_PREFIX}/lib/libluajit-5.1.a ${CMAKE_CURRENT_BINARY_DIR}/mpv-dev/libluajit-5.1.dll.a
