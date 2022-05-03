@@ -28,6 +28,7 @@ ExternalProject_Add(ffmpeg
         ${ffmpeg_x265}
         xvidcore
         libxml2
+        frei0r
         libvpl
         libopenmpt
         libjxl
@@ -59,6 +60,7 @@ ExternalProject_Add(ffmpeg
         --enable-postproc
         --enable-avisynth
         --enable-vapoursynth
+        --enable-frei0r
         --enable-gmp
         --enable-libass
         --enable-libbluray

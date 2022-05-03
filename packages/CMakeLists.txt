@@ -53,6 +53,7 @@ list(APPEND ep
     dav1d
     libwebp
     vapoursynth
+    frei0r
     libbs2b
     libssh
     libsdl2
