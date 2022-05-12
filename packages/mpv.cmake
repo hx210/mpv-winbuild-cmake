@@ -15,6 +15,7 @@ ExternalProject_Add(mpv
         luasocket
         rubberband
         uchardet
+        oniguruma
         openal-soft
         mujs
         vulkan
@@ -27,6 +28,7 @@ ExternalProject_Add(mpv
     SOURCE_DIR ${SOURCE_LOCATION}
     GIT_CLONE_FLAGS "--filter=tree:0"
     UPDATE_COMMAND ""
+    PATCH_COMMAND ${EXEC} git apply --3way --whitespace=fix ${CMAKE_CURRENT_SOURCE_DIR}/mpv-*.patch
     CONFIGURE_COMMAND ${EXEC} meson <BINARY_DIR> <SOURCE_DIR>
         --prefix=${MINGW_INSTALL_PREFIX}
         --libdir=${MINGW_INSTALL_PREFIX}/lib
@@ -45,6 +47,7 @@ ExternalProject_Add(mpv
         -Dlibbluray=enabled
         -Ddvdnav=enabled
         -Duchardet=enabled
+        -Doniguruma=enabled
         -Drubberband=enabled
         -Dlcms2=enabled
         -Dopenal=enabled

@@ -4,6 +4,7 @@ list(APPEND ep
     xz
     lzo
     uchardet
+    oniguruma
     rubberband
     zlib
     bzip2

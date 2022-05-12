@@ -1,0 +1,103 @@
+From 5b28cd01d2b845d6f3aa2a271b075f9c5f2e2700 Mon Sep 17 00:00:00 2001
+From: Faheem Pervez <trippin1@gmail.com>
+Date: Wed, 17 Aug 2022 10:09:59 +0100
+Subject: [PATCH 1/1] Use oniguruma for regexes on Windows
+
+---
+ meson.build        | 7 +++++++
+ meson_options.txt  | 1 +
+ sub/filter_regex.c | 6 ++++++
+ sub/sd_ass.c       | 2 +-
+ wscript            | 4 ++++
+ wscript_build.py   | 2 +-
+ 6 files changed, 20 insertions(+), 2 deletions(-)
+
+diff --git a/meson.build b/meson.build
+index 0eb10d4..79f82da 100644
+--- a/meson.build
++++ b/meson.build
+@@ -723,6 +723,13 @@ if features['stdatomic']
+     dependencies += stdatomic_dep
+ endif
+ 
++oniguruma = dependency('oniguruma', required: get_option('oniguruma'))
++features += {'oniguruma': oniguruma.found()}
++if features['oniguruma']
++    dependencies += oniguruma
++    sources += files('sub/filter_regex.c')
++endif
++
+ uchardet_opt = get_option('uchardet').require(
+     features['iconv'],
+     error_message: 'iconv was not found!',
+diff --git a/meson_options.txt b/meson_options.txt
+index 27af048..85ea424 100644
+--- a/meson_options.txt
++++ b/meson_options.txt
+@@ -32,6 +32,7 @@ option('sdl2', type: 'feature', value: 'disabled', description: 'SDL2')
+ option('sdl2-gamepad', type: 'feature', value: 'auto', description: 'SDL2 gamepad input')
+ option('stdatomic', type: 'feature', value: 'auto', description: 'C11 stdatomic.h')
+ option('uchardet', type: 'feature', value: 'auto', description: 'uchardet support')
++option('oniguruma', type: 'feature', value: 'disabled', description: 'use oniguruma for regexes')
+ option('uwp', type: 'feature', value: 'disabled', description: 'Universal Windows Platform')
+ option('vapoursynth', type: 'feature', value: 'auto', description: 'VapourSynth filter bridge')
+ option('vector', type: 'feature', value: 'auto', description: 'GCC vector instructions')
+diff --git a/sub/filter_regex.c b/sub/filter_regex.c
+index 8e29991..422cca5 100644
+--- a/sub/filter_regex.c
++++ b/sub/filter_regex.c
+@@ -1,4 +1,10 @@
++#include "config.h"
++#if HAVE_ONIGURUMA
++#define ONIG_STATIC
++#include <onigposix.h>
++#else
+ #include <regex.h>
++#endif
+ #include <sys/types.h>
+ 
+ #include "common/common.h"
+diff --git a/sub/sd_ass.c b/sub/sd_ass.c
+index ec79bda..a1378cd 100644
+--- a/sub/sd_ass.c
++++ b/sub/sd_ass.c
+@@ -65,7 +65,7 @@ static void fill_plaintext(struct sd *sd, double pts);
+ static const struct sd_filter_functions *const filters[] = {
+     // Note: list order defines filter order.
+     &sd_filter_sdh,
+-#if HAVE_POSIX
++#if HAVE_POSIX || HAVE_ONIGURUMA
+     &sd_filter_regex,
+ #endif
+ #if HAVE_JAVASCRIPT
+diff --git a/wscript b/wscript
+index 9fc7583..792b791 100644
+--- a/wscript
++++ b/wscript
+@@ -360,6 +360,10 @@ iconv support use --disable-iconv.",
+         'desc': 'uchardet support',
+         'deps': 'iconv',
+         'func': check_pkg_config('uchardet'),
++    }, {
++        'name': '--oniguruma',
++        'desc': 'oniguruma support for regexes on Windows',
++        'func': check_pkg_config('oniguruma'),
+     }, {
+         'name': '--rubberband',
+         'desc': 'librubberband support',
+diff --git a/wscript_build.py b/wscript_build.py
+index 4613898..aade999 100644
+--- a/wscript_build.py
++++ b/wscript_build.py
+@@ -405,7 +405,7 @@ def build(ctx):
+         ( "sub/ass_mp.c" ),
+         ( "sub/dec_sub.c" ),
+         ( "sub/draw_bmp.c" ),
+-        ( "sub/filter_regex.c",                  "posix" ),
++        ( "sub/filter_regex.c",                  "posix || oniguruma" ),
+         ( "sub/filter_jsre.c",                   "javascript" ),
+         ( "sub/filter_sdh.c" ),
+         ( "sub/img_convert.c" ),
+-- 
+2.38.1.windows.1
+
