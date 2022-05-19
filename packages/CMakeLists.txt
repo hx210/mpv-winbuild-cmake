@@ -46,6 +46,7 @@ list(APPEND ep
     mbedtls
     libxml2
     libvpl
+    fdka
     amf-headers
     avisynth-headers
     nvcodec-headers
