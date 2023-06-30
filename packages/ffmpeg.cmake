@@ -19,6 +19,7 @@ ExternalProject_Add(ffmpeg
         libwebp
         libzimg
         libmysofa
+        fdka
         fontconfig
         harfbuzz
         opus
@@ -69,6 +70,7 @@ ExternalProject_Add(ffmpeg
         --enable-libopenmpt
         --enable-libmp3lame
         --enable-libopus
+        --enable-libfdk-aac        
         --enable-libsoxr
         --enable-libspeex
         --enable-libvorbis
