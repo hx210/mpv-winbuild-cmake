@@ -38,7 +38,6 @@ ExternalProject_Add(ffmpeg
         libaribcaption
         dav1d
         vapoursynth
-        uavs3d
     GIT_REPOSITORY https://github.com/FFmpeg/FFmpeg.git
     SOURCE_DIR ${SOURCE_LOCATION}
     GIT_CLONE_FLAGS "--filter=tree:0"
@@ -79,7 +78,6 @@ ExternalProject_Add(ffmpeg
         --enable-libx264
         --enable-libx265
         --enable-libdav1d
-        --enable-libuavs3d
         --enable-libxvid
         --enable-libzimg
         --enable-mbedtls
