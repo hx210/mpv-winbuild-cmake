@@ -14,6 +14,7 @@ ExternalProject_Add(libjxl
     GIT_CLONE_FLAGS "--filter=tree:0"
     GIT_REMOTE_NAME origin
     GIT_TAG main
+    GIT_RESET d3a69dbeef78f036969a2500f949f931df857e17
     GIT_SUBMODULES ""
     UPDATE_COMMAND ""
     CONFIGURE_COMMAND ""
@@ -25,7 +26,7 @@ ExternalProject_Add(libjxl
     COMMAND bash -c "ln -s ${src_highway} <SOURCE_DIR>/third_party/highway"
     COMMAND ${EXEC} cmake -H<SOURCE_DIR> -B<BINARY_DIR>
         -DCMAKE_INSTALL_PREFIX=${MINGW_INSTALL_PREFIX}
-	-DSHARE_INSTALL_PREFIX=${MINGW_INSTALL_PREFIX}
+        -DSHARE_INSTALL_PREFIX=${MINGW_INSTALL_PREFIX}
         -DCMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_FILE}
         -DBUILD_SHARED_LIBS=OFF
         -DCMAKE_BUILD_TYPE=Release
@@ -47,8 +48,8 @@ ExternalProject_Add(libjxl
         -DJPEGXL_ENABLE_SJPEG=OFF
         -DJPEGXL_ENABLE_AVX512=ON
         -DJPEGXL_ENABLE_AVX512_ZEN4=ON
-        -DCMAKE_CXX_FLAGS='${CMAKE_CXX_FLAGS} -msse2 -Wa,-muse-unaligned-vector-move' # fix crash on AVX2 proc (64bit) due to unaligned stack memory
-        -DCMAKE_C_FLAGS='${CMAKE_C_FLAGS} -msse2 -Wa,-muse-unaligned-vector-move'
+        -DCMAKE_CXX_FLAGS='${CMAKE_CXX_FLAGS} -msse2 ${libjxl_unaligned_vector}'
+        -DCMAKE_C_FLAGS='${CMAKE_C_FLAGS}     -msse2 ${libjxl_unaligned_vector}'
     BUILD_COMMAND ${MAKE} -C <BINARY_DIR>
     INSTALL_COMMAND ${MAKE} -C <BINARY_DIR> install
     LOG_DOWNLOAD 1 LOG_UPDATE 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1

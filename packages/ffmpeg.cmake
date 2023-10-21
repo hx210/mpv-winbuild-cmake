@@ -38,6 +38,9 @@ ExternalProject_Add(ffmpeg
         aom
         dav1d
         vapoursynth
+        uavs3d
+        davs2
+        rubberband
     GIT_REPOSITORY https://github.com/FFmpeg/FFmpeg.git
     SOURCE_DIR ${SOURCE_LOCATION}
     GIT_CLONE_FLAGS "--filter=tree:0"
@@ -47,10 +50,10 @@ ExternalProject_Add(ffmpeg
         --prefix=${MINGW_INSTALL_PREFIX}
         --arch=${TARGET_CPU}
         --target-os=mingw32
-        --target-exec=wine
         --pkg-config-flags=--static
         --enable-cross-compile
         --enable-runtime-cpudetect
+        ${ffmpeg_hardcoded_tables}
         --enable-gpl
         --enable-version3
         --enable-nonfree
@@ -72,6 +75,7 @@ ExternalProject_Add(ffmpeg
         --enable-libsoxr
         --enable-libvorbis
         --enable-libbs2b
+        --enable-librubberband
         --enable-libvpx
         --enable-libwebp
         --enable-libx264
@@ -91,17 +95,20 @@ ExternalProject_Add(ffmpeg
         --enable-libshaderc
         --enable-libzvbi
         --enable-libaribcaption
-        --enable-cuda
+        --enable-cuda-llvm
         --enable-cuvid
         --enable-nvdec
         --enable-nvenc
         --enable-amf
         --disable-doc
+        --disable-ffplay
+        --disable-ffprobe
         --disable-vaapi
         --disable-vdpau
         --disable-videotoolbox
         --disable-decoder=libaom_av1
-        "--extra-libs='-lstdc++'" # needs by libjxl and shaderc
+        --extra-cflags='-Wno-error=int-conversion'
+        "--extra-libs='${ffmpeg_extra_libs}'" # -lstdc++ / -lc++ needs by libjxl and shaderc
     BUILD_COMMAND ${MAKE}
     INSTALL_COMMAND ${MAKE} install
     LOG_DOWNLOAD 1 LOG_UPDATE 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1
