@@ -30,11 +30,13 @@ ExternalProject_Add(mpv
         --prefix=${MINGW_INSTALL_PREFIX}
         --libdir=${MINGW_INSTALL_PREFIX}/lib
         --cross-file=${MESON_CROSS}
-        --buildtype=release
         --default-library=shared
         --prefer-static
-        -Db_lto=true
+        -Ddebug=true
         -Db_ndebug=true
+        -Doptimization=3
+        -Db_lto=true
+        ${mpv_lto_mode}
         -Dlibmpv=true
         -Dpdf-build=enabled
         -Dlua=enabled
@@ -73,8 +75,7 @@ ExternalProject_Add_Step(mpv copy-binary
     COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/player/mpv.com                    ${CMAKE_CURRENT_BINARY_DIR}/mpv-package/mpv.com
     COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/mpv.pdf                           ${CMAKE_CURRENT_BINARY_DIR}/mpv-package/doc/manual.pdf
     COMMAND ${CMAKE_COMMAND} -E copy ${MINGW_INSTALL_PREFIX}/etc/fonts/fonts.conf   ${CMAKE_CURRENT_BINARY_DIR}/mpv-package/mpv/fonts.conf
-    COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/mpv.debug                         ${CMAKE_CURRENT_BINARY_DIR}/mpv-debug/mpv.debug
-
+    ${mpv_copy_debug}
     COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libmpv-2.dll          ${CMAKE_CURRENT_BINARY_DIR}/mpv-dev/libmpv-2.dll
     COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libmpv.dll.a          ${CMAKE_CURRENT_BINARY_DIR}/mpv-dev/libmpv.dll.a
     COMMAND ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/libmpv/client.h       ${CMAKE_CURRENT_BINARY_DIR}/mpv-dev/include/mpv/client.h
