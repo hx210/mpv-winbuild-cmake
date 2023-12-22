@@ -6,7 +6,7 @@ ExternalProject_Add(llvm-compiler-rt-builtin
     UPDATE_COMMAND ""
     SOURCE_DIR ${LLVM_SRC}
     LIST_SEPARATOR ,
-    CONFIGURE_COMMAND ${EXEC} cmake -H<SOURCE_DIR>/compiler-rt/lib/builtins -B<BINARY_DIR>
+    CONFIGURE_COMMAND ${EXEC} CONF=1 cmake -H<SOURCE_DIR>/compiler-rt/lib/builtins -B<BINARY_DIR>
         -G Ninja
         -DCMAKE_BUILD_TYPE=Release
         -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}/lib/clang/${clang_version}
@@ -26,9 +26,9 @@ ExternalProject_Add(llvm-compiler-rt-builtin
         -DCMAKE_FIND_ROOT_PATH_MODE_INCLUDE=ONLY
         -DCMAKE_FIND_ROOT_PATH_MODE_PACKAGE=ONLY
         -DSANITIZER_CXX_ABI=libc++
-    BUILD_COMMAND ${EXEC} ninja -C <BINARY_DIR>
+    BUILD_COMMAND ${EXEC} LTO=0 ninja -C <BINARY_DIR>
           COMMAND bash -c "cp <BINARY_DIR>/lib/windows/libclang* ${MINGW_INSTALL_PREFIX}/lib"
-    INSTALL_COMMAND ${EXEC} ninja -C <BINARY_DIR> install
+    INSTALL_COMMAND ${EXEC} LTO=0 ninja -C <BINARY_DIR> install
     LOG_DOWNLOAD 1 LOG_UPDATE 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1
 )
 

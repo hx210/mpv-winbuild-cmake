@@ -1,7 +1,7 @@
 ExternalProject_Add(libsodium
     URL https://github.com/jedisct1/libsodium/archive/refs/heads/stable.tar.gz
     DOWNLOAD_DIR ${SOURCE_LOCATION}
-    CONFIGURE_COMMAND ${EXEC} <SOURCE_DIR>/autogen.sh && <SOURCE_DIR>/configure
+    CONFIGURE_COMMAND ${EXEC} <SOURCE_DIR>/autogen.sh && CONF=1 <SOURCE_DIR>/configure
         --host=${TARGET_ARCH}
         --prefix=${MINGW_INSTALL_PREFIX}
         --enable-static

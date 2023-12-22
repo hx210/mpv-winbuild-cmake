@@ -7,15 +7,15 @@ ExternalProject_Add(mingw-w64-crt
     DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
     SOURCE_DIR ${MINGW_SRC}
-    CONFIGURE_COMMAND ${EXEC} <SOURCE_DIR>/mingw-w64-crt/configure
+    CONFIGURE_COMMAND ${EXEC} CONF=1 <SOURCE_DIR>/mingw-w64-crt/configure
         --host=${TARGET_ARCH}
         --prefix=${MINGW_INSTALL_PREFIX}
         --with-sysroot=${CMAKE_INSTALL_PREFIX}
         --with-default-msvcrt=ucrt
         ${crt_lib}
         ${cfguard}
-    BUILD_COMMAND ${MAKE}
-    INSTALL_COMMAND ${MAKE} install-strip
+    BUILD_COMMAND ${MAKE} LTO=0
+    INSTALL_COMMAND ${MAKE} LTO=0 install-strip
     LOG_DOWNLOAD 1 LOG_UPDATE 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1
 )
 

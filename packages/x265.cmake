@@ -26,13 +26,16 @@ ExternalProject_Add(x265-10bit
         x265
     DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
-    CONFIGURE_COMMAND ${EXEC} cmake -H${source_dir}/source -B<BINARY_DIR>
+    CONFIGURE_COMMAND ${EXEC} CONF=1 cmake -H${source_dir}/source -B<BINARY_DIR>
         -G Ninja
         -DCMAKE_BUILD_TYPE=Release
-        -DCMAKE_INSTALL_PREFIX=${MINGW_INSTALL_PREFIX}
         -DCMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_FILE}
+        -DCMAKE_INSTALL_PREFIX=${MINGW_INSTALL_PREFIX}
+        -DCMAKE_FIND_ROOT_PATH=${MINGW_INSTALL_PREFIX}
+        -DBUILD_SHARED_LIBS=OFF
         ${high_bit_depth}
         -DENABLE_SHARED=OFF
+        -DENABLE_CLI=OFF
         -DCMAKE_ASM_NASM_FLAGS=-w-macro-params-legacy
     BUILD_COMMAND ${EXEC} ninja -C <BINARY_DIR>
     INSTALL_COMMAND ${EXEC} ninja -C <BINARY_DIR> install
@@ -44,10 +47,13 @@ ExternalProject_Add(x265-10bit-lib
         x265
     DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
-    CONFIGURE_COMMAND ${EXEC} cmake -H${source_dir}/source -B<BINARY_DIR>
+    CONFIGURE_COMMAND ${EXEC} CONF=1 cmake -H${source_dir}/source -B<BINARY_DIR>
         -G Ninja
-        -DCMAKE_INSTALL_PREFIX=<BINARY_DIR>
+        -DCMAKE_BUILD_TYPE=Release
         -DCMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_FILE}
+        -DCMAKE_INSTALL_PREFIX=${MINGW_INSTALL_PREFIX}
+        -DCMAKE_FIND_ROOT_PATH=${MINGW_INSTALL_PREFIX}
+        -DBUILD_SHARED_LIBS=OFF
         -DHIGH_BIT_DEPTH=ON
         -DENABLE_HDR10_PLUS=ON
         -DEXPORT_C_API=OFF
@@ -64,10 +70,13 @@ ExternalProject_Add(x265-12bit-lib
         x265
     DOWNLOAD_COMMAND ""
     UPDATE_COMMAND ""
-    CONFIGURE_COMMAND ${EXEC} cmake -H${source_dir}/source -B<BINARY_DIR>
+    CONFIGURE_COMMAND ${EXEC} CONF=1 cmake -H${source_dir}/source -B<BINARY_DIR>
         -G Ninja
-        -DCMAKE_INSTALL_PREFIX=<BINARY_DIR>
+        -DCMAKE_BUILD_TYPE=Release
         -DCMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_FILE}
+        -DCMAKE_INSTALL_PREFIX=${MINGW_INSTALL_PREFIX}
+        -DCMAKE_FIND_ROOT_PATH=${MINGW_INSTALL_PREFIX}
+        -DBUILD_SHARED_LIBS=OFF
         -DHIGH_BIT_DEPTH=ON
         -DENABLE_HDR10_PLUS=ON
         -DMAIN12=ON
@@ -102,14 +111,18 @@ ExternalProject_Add(x265-8+10bit
     LIST_SEPARATOR ^^
     UPDATE_COMMAND ""
     CONFIGURE_COMMAND ${CMAKE_COMMAND} -E copy ${binary_dir}/libx265_main10.a <BINARY_DIR>
-              COMMAND ${EXEC} cmake -H${source_dir}/source -B<BINARY_DIR>
+              COMMAND ${EXEC} CONF=1 cmake -H${source_dir}/source -B<BINARY_DIR>
                         -G Ninja
-                        -DCMAKE_INSTALL_PREFIX=${MINGW_INSTALL_PREFIX}
+                        -DCMAKE_BUILD_TYPE=Release
                         -DCMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_FILE}
+                        -DCMAKE_INSTALL_PREFIX=${MINGW_INSTALL_PREFIX}
+                        -DCMAKE_FIND_ROOT_PATH=${MINGW_INSTALL_PREFIX}
+                        -DBUILD_SHARED_LIBS=OFF
                         -DEXTRA_LIB='x265_main10.a'
                         -DEXTRA_LINK_FLAGS=-L.
                         -DLINKED_10BIT=ON
                         -DENABLE_SHARED=OFF
+                        -DENABLE_CLI=OFF
                         -DCMAKE_ASM_NASM_FLAGS=-w-macro-params-legacy
     BUILD_COMMAND ${EXEC} ninja -C <BINARY_DIR>
           COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libx265.a <BINARY_DIR>/libx265_main.a
@@ -129,15 +142,19 @@ ExternalProject_Add(x265-8+10+12bit
     UPDATE_COMMAND ""
     CONFIGURE_COMMAND ${CMAKE_COMMAND} -E copy ${binary_dir}/libx265_main10.a <BINARY_DIR>
               COMMAND ${CMAKE_COMMAND} -E copy ${binary_dir}/libx265_main12.a <BINARY_DIR>
-              COMMAND ${EXEC} cmake -H${source_dir}/source -B<BINARY_DIR>
+              COMMAND ${EXEC} CONF=1 cmake -H${source_dir}/source -B<BINARY_DIR>
                         -G Ninja
-                        -DCMAKE_INSTALL_PREFIX=${MINGW_INSTALL_PREFIX}
+                        -DCMAKE_BUILD_TYPE=Release
                         -DCMAKE_TOOLCHAIN_FILE=${TOOLCHAIN_FILE}
+                        -DCMAKE_INSTALL_PREFIX=${MINGW_INSTALL_PREFIX}
+                        -DCMAKE_FIND_ROOT_PATH=${MINGW_INSTALL_PREFIX}
+                        -DBUILD_SHARED_LIBS=OFF
                         -DEXTRA_LIB='x265_main10.a^^x265_main12.a'
                         -DEXTRA_LINK_FLAGS=-L.
                         -DLINKED_10BIT=ON
                         -DLINKED_12BIT=ON
                         -DENABLE_SHARED=OFF
+                        -DENABLE_CLI=OFF
                         -DCMAKE_ASM_NASM_FLAGS=-w-macro-params-legacy
     BUILD_COMMAND ${EXEC} ninja -C <BINARY_DIR>
           COMMAND ${CMAKE_COMMAND} -E copy <BINARY_DIR>/libx265.a <BINARY_DIR>/libx265_main.a
