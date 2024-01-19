@@ -7,21 +7,21 @@ on:
   workflow_dispatch:
     inputs:
       command:
-        description: 'Run custom command before building'
+        description: "Run custom command before building"
         required: false
         type: string
       sourceforge:
-        description: 'Upload to Sourceforge'
+        description: "Upload to Sourceforge"
         required: false
         default: false
         type: boolean
       github_release:
-        description: 'Upload to Github release'
+        description: "Upload to Github release"
         required: false
         default: false
         type: boolean
       mpv_tarball:
-        description: 'Build latest mpv tarball'
+        description: "Build latest mpv tarball"
         required: false
         default: false
         type: boolean
@@ -34,7 +34,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        bit: [i686, x86_64, x86_64_v3]
+        bit: [x86_64]
     env:
       BIT: ${{ matrix.bit }}
     container:
@@ -112,6 +112,21 @@ jobs:
           ninja -C build_$BIT llvm-copy-builtin
           $MPV_TARBALL && ninja -C build_$BIT mpv-release || ninja -C build_$BIT mpv
           $MPV_TARBALL && echo "mpv_ver=$(cat build_$BIT/packages/mpv-release-prefix/VERSION)" >> $GITHUB_OUTPUT || echo "mpv_ver=UNKNOWN" >> $GITHUB_OUTPUT
+
+      - name: 获取fdk输出路径
+        id: fdk
+        shell: bash
+        run: |
+          fdkadll_output="$GITHUB_WORKSPACE/output"
+          mkdir -p ${fdkadll_output}
+          find "$PWD" -type f -name "libfdk-aac-2.dll" -print0 | xargs -0 -I {} cp -f {} "${fdkadll_output}"
+          echo "fdkadll_output=${fdkadll_output}" >>$GITHUB_ENV
+
+      - name: 上传 fdkaac
+        uses: actions/upload-artifact@v4
+        with:
+          name: fdka-archive
+          path: ${{ env.fdkadll_output }}
 
       - name: Packaging mpv
         run: |
