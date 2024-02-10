@@ -4,6 +4,8 @@ defaults:
     shell: bash
 
 on:
+  schedule:
+     - cron:  '0 17 * * *'
   workflow_dispatch:
     inputs:
       command:
