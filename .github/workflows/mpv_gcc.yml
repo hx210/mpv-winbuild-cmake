@@ -5,7 +5,7 @@ defaults:
 
 on:
   schedule:
-     - cron:  '0 17 * * *'
+    - cron: "0 17 * * *"
   workflow_dispatch:
     inputs:
       command:
@@ -42,6 +42,8 @@ jobs:
       image: docker://ghcr.io/shinchiro/archlinux:latest
     outputs:
       mpv_ver: ${{ steps.build_mpv_step.outputs.mpv_ver }}
+      CACHE_VERSION: ${{ steps.hash.outputs.CACHE_VERSION }}
+
     steps:
       - name: Init variable
         run: |
@@ -68,30 +70,37 @@ jobs:
         with:
           ref: master
 
+      - name: hash
+        id: hash
+        run: |
+          CACHE_VERSION=$(git rev-parse --short HEAD)
+          echo "CACHE_VERSION=$CACHE_VERSION" >>$GITHUB_ENV
+          echo "CACHE_VERSION=${CACHE_VERSION}" >> $GITHUB_OUTPUT
+
       - name: Loading ${{ matrix.bit }} toolchain cache
         uses: actions/cache/restore@main
         with:
           path: build_${{ matrix.bit }}
-          key: ${{ secrets.CACHE_VERSION }}-gcc-${{ matrix.bit }}_toolchain-${{ github.run_id }}
+          key: ${{ env.CACHE_VERSION }}-gcc-${{ matrix.bit }}_toolchain-${{ github.run_id }}
           restore-keys: |
-            ${{ secrets.CACHE_VERSION }}-gcc-${{ matrix.bit }}_toolchain
+            ${{ env.CACHE_VERSION }}-gcc-${{ matrix.bit }}_toolchain
 
       - name: Loading repository cache
         uses: actions/cache/restore@main
         with:
           path: src_packages
-          key: ${{ secrets.CACHE_VERSION }}-repository-${{ github.run_id }}
+          key: ${{ env.CACHE_VERSION }}-repository-${{ github.run_id }}
           restore-keys: |
-            ${{ secrets.CACHE_VERSION }}-repository
+            ${{ env.CACHE_VERSION }}-repository
 
       - name: Loading rustup cache
         uses: actions/cache/restore@main
         with:
           path: |
             clang_root
-          key: ${{ secrets.CACHE_VERSION }}-clang_root-${{ github.run_id }}
+          key: ${{ env.CACHE_VERSION }}-clang_root-${{ github.run_id }}
           restore-keys: |
-            ${{ secrets.CACHE_VERSION }}-clang_root
+            ${{ env.CACHE_VERSION }}-clang_root
 
       - name: Running custom command
         if: ${{ github.event.inputs.command != '' }}
@@ -124,7 +133,7 @@ jobs:
           mkdir -p ${fdkadll_output}
           find "$PWD" -type f -name "libfdk-aac-2.dll" -print0 | xargs -0 -I {} cp -f {} "${fdkadll_output}"
           echo "fdkadll_output=${fdkadll_output}" >>$GITHUB_ENV
-  
+
       - name: 上传 fdkaac
         uses: actions/upload-artifact@v4
         with:
@@ -177,21 +186,21 @@ jobs:
         if: always()
         with:
           path: build_${{ matrix.bit }}
-          key: ${{ secrets.CACHE_VERSION }}-gcc-${{ matrix.bit }}_toolchain-${{ github.run_id }}
+          key: ${{ env.CACHE_VERSION }}-gcc-${{ matrix.bit }}_toolchain-${{ github.run_id }}
 
       - name: Saving repository cache
         uses: actions/cache/save@main
         if: false
         with:
           path: src_packages
-          key: ${{ secrets.CACHE_VERSION }}-repository-${{ github.run_id }}
+          key: ${{ env.CACHE_VERSION }}-repository-${{ github.run_id }}
 
       - name: Saving release_${{ matrix.bit }} cache
         uses: actions/cache/save@main
         if: ${{ github.event.inputs.github_release == 'true' }}
         with:
           path: release_${{ matrix.bit }}
-          key: ${{ secrets.CACHE_VERSION }}-gcc-release_${{ matrix.bit }}-${{ github.run_id }}
+          key: ${{ env.CACHE_VERSION }}-gcc-release_${{ matrix.bit }}-${{ github.run_id }}
 
   release:
     name: Upload releases
@@ -201,7 +210,7 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
       CURL_RETRIES: "--connect-timeout 60 --retry 999 --retry-delay 5 --retry-all-errors"
-      release_x86_64_key: ${{ secrets.CACHE_VERSION }}-gcc-release_x86_64-${{ github.run_id }}
+      release_x86_64_key: ${{ needs.build_mpv.outputs.CACHE_VERSION }}-gcc-release_x86_64-${{ github.run_id }}
     container:
       image: docker://alpine:latest
 
