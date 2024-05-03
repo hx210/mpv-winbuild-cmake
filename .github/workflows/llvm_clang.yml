@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       command:
-        description: 'Run custom command before building'
+        description: "Run custom command before building"
         required: false
         type: string
 
@@ -18,7 +18,7 @@ jobs:
     strategy:
       fail-fast: false
     container:
-        image: docker://ghcr.io/shinchiro/archlinux:latest
+      image: docker://ghcr.io/shinchiro/archlinux:latest
     steps:
       - name: Setup git config
         run: |
@@ -38,7 +38,7 @@ jobs:
         uses: actions/cache/restore@main
         with:
           path: clang_root
-          key: ${{ secrets.CACHE_VERSION }}-clang_root-${{ github.run_id }}
+          key: ${{ secrets.CACHE_VERSION }}-clang_root
           restore-keys: ${{ secrets.CACHE_VERSION }}-clang_root
 
       - name: Loading x86_64 toolchain
@@ -46,7 +46,7 @@ jobs:
         uses: actions/cache/restore@main
         with:
           path: build_x86_64
-          key: ${{ secrets.CACHE_VERSION }}-clang-x86_64_toolchain-${{ github.run_id }}
+          key: ${{ secrets.CACHE_VERSION }}-clang-x86_64_toolchain
           restore-keys: ${{ secrets.CACHE_VERSION }}-clang-x86_64_toolchain
 
       - name: Loading x86_64_v3 toolchain
@@ -54,7 +54,7 @@ jobs:
         uses: actions/cache/restore@main
         with:
           path: build_x86_64_v3
-          key: ${{ secrets.CACHE_VERSION }}-clang-x86_64_v3_toolchain-${{ github.run_id }}
+          key: ${{ secrets.CACHE_VERSION }}-clang-x86_64_v3_toolchain
           restore-keys: ${{ secrets.CACHE_VERSION }}-clang-x86_64_v3_toolchain
 
       - name: Loading i686 toolchain
@@ -62,7 +62,7 @@ jobs:
         uses: actions/cache/restore@main
         with:
           path: build_i686
-          key: ${{ secrets.CACHE_VERSION }}-clang-i686_toolchain-${{ github.run_id }}
+          key: ${{ secrets.CACHE_VERSION }}-clang-i686_toolchain
           restore-keys: ${{ secrets.CACHE_VERSION }}-clang-i686_toolchain
 
       - name: Loading aarch64 toolchain
@@ -71,7 +71,7 @@ jobs:
         uses: actions/cache/restore@main
         with:
           path: build_aarch64
-          key: ${{ secrets.CACHE_VERSION }}-clang-aarch64_toolchain-${{ github.run_id }}
+          key: ${{ secrets.CACHE_VERSION }}-clang-aarch64_toolchain
           restore-keys: ${{ secrets.CACHE_VERSION }}-clang-aarch64_toolchain
 
       - name: Loading repository cache
@@ -80,7 +80,7 @@ jobs:
         uses: actions/cache/restore@main
         with:
           path: src_packages
-          key: ${{ secrets.CACHE_VERSION }}-repository-${{ github.run_id }}
+          key: ${{ secrets.CACHE_VERSION }}-repository
           restore-keys: ${{ secrets.CACHE_VERSION }}-repository
 
       - name: Running custom command
@@ -170,39 +170,39 @@ jobs:
         uses: actions/cache/save@main
         with:
           path: clang_root
-          key: ${{ secrets.CACHE_VERSION }}-clang_root-${{ github.run_id }}
+          key: ${{ secrets.CACHE_VERSION }}-clang_root
 
       - name: Saving x86_64 toolchain
         uses: actions/cache/save@main
         with:
           path: build_x86_64
-          key: ${{ secrets.CACHE_VERSION }}-clang-x86_64_toolchain-${{ github.run_id }}
+          key: ${{ secrets.CACHE_VERSION }}-clang-x86_64_toolchain
 
       - name: Saving x86_64_v3 toolchain
         uses: actions/cache/save@main
         with:
           path: build_x86_64_v3
-          key: ${{ secrets.CACHE_VERSION }}-clang-x86_64_v3_toolchain-${{ github.run_id }}
+          key: ${{ secrets.CACHE_VERSION }}-clang-x86_64_v3_toolchain
 
       - name: Saving i686 toolchain
         uses: actions/cache/save@main
         with:
           path: build_i686
-          key: ${{ secrets.CACHE_VERSION }}-clang-i686_toolchain-${{ github.run_id }}
+          key: ${{ secrets.CACHE_VERSION }}-clang-i686_toolchain
 
       - name: Saving aarch64 toolchain
         if: false
         uses: actions/cache/save@main
         with:
           path: build_aarch64
-          key: ${{ secrets.CACHE_VERSION }}-clang-aarch64_toolchain-${{ github.run_id }}
+          key: ${{ secrets.CACHE_VERSION }}-clang-aarch64_toolchain
 
       - name: Saving repository cache
         if: false
         uses: actions/cache/save@main
         with:
           path: src_packages
-          key: ${{ secrets.CACHE_VERSION }}-repository-${{ github.run_id }}
+          key: ${{ secrets.CACHE_VERSION }}-repository
 
   call_workflow:
     name: Run mpv_clang

@@ -81,7 +81,7 @@ jobs:
         uses: actions/cache/restore@main
         with:
           path: build_${{ matrix.bit }}
-          key: ${{ env.CACHE_VERSION }}-gcc-${{ matrix.bit }}_toolchain-${{ github.run_id }}
+          key: ${{ env.CACHE_VERSION }}-gcc-${{ matrix.bit }}_toolchain
           restore-keys: |
             ${{ env.CACHE_VERSION }}-gcc-${{ matrix.bit }}_toolchain
 
@@ -89,7 +89,7 @@ jobs:
         uses: actions/cache/restore@main
         with:
           path: src_packages
-          key: ${{ env.CACHE_VERSION }}-repository-${{ github.run_id }}
+          key: ${{ env.CACHE_VERSION }}-repository
           restore-keys: |
             ${{ env.CACHE_VERSION }}-repository
 
@@ -98,7 +98,7 @@ jobs:
         with:
           path: |
             clang_root
-          key: ${{ env.CACHE_VERSION }}-clang_root-${{ github.run_id }}
+          key: ${{ env.CACHE_VERSION }}-clang_root
           restore-keys: |
             ${{ env.CACHE_VERSION }}-clang_root
 
@@ -186,21 +186,21 @@ jobs:
         if: always()
         with:
           path: build_${{ matrix.bit }}
-          key: ${{ env.CACHE_VERSION }}-gcc-${{ matrix.bit }}_toolchain-${{ github.run_id }}
+          key: ${{ env.CACHE_VERSION }}-gcc-${{ matrix.bit }}_toolchain
 
       - name: Saving repository cache
         uses: actions/cache/save@main
         if: false
         with:
           path: src_packages
-          key: ${{ env.CACHE_VERSION }}-repository-${{ github.run_id }}
+          key: ${{ env.CACHE_VERSION }}-repository
 
       - name: Saving release_${{ matrix.bit }} cache
         uses: actions/cache/save@main
         if: ${{ github.event.inputs.github_release == 'true' }}
         with:
           path: release_${{ matrix.bit }}
-          key: ${{ env.CACHE_VERSION }}-gcc-release_${{ matrix.bit }}-${{ github.run_id }}
+          key: ${{ env.CACHE_VERSION }}-gcc-release_${{ matrix.bit }}
 
   release:
     name: Upload releases
@@ -210,7 +210,7 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
       CURL_RETRIES: "--connect-timeout 60 --retry 999 --retry-delay 5 --retry-all-errors"
-      release_x86_64_key: ${{ needs.build_mpv.outputs.CACHE_VERSION }}-gcc-release_x86_64-${{ github.run_id }}
+      release_x86_64_key: ${{ needs.build_mpv.outputs.CACHE_VERSION }}-gcc-release_x86_64
     container:
       image: docker://alpine:latest
 

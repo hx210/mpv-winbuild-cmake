@@ -71,7 +71,7 @@ jobs:
         with:
           path: |
             clang_root
-          key: ${{ secrets.CACHE_VERSION }}-clang_root-${{ github.run_id }}
+          key: ${{ secrets.CACHE_VERSION }}-clang_root
           restore-keys: |
             ${{ secrets.CACHE_VERSION }}-clang_root
 
@@ -79,7 +79,7 @@ jobs:
         uses: actions/cache/restore@main
         with:
           path: src_packages
-          key: ${{ secrets.CACHE_VERSION }}-repository-${{ github.run_id }}
+          key: ${{ secrets.CACHE_VERSION }}-repository
           restore-keys: |
             ${{ secrets.CACHE_VERSION }}-repository
 
@@ -88,7 +88,7 @@ jobs:
         with:
           path: |
             build_${{ matrix.bit }}
-          key: ${{ secrets.CACHE_VERSION }}-clang-${{ matrix.bit }}_toolchain-${{ github.run_id }}
+          key: ${{ secrets.CACHE_VERSION }}-clang-${{ matrix.bit }}_toolchain
           restore-keys: |
             ${{ secrets.CACHE_VERSION }}-clang-${{ matrix.bit }}_toolchain
 
@@ -183,14 +183,14 @@ jobs:
         with:
           path: |
             clang_root
-          key: ${{ secrets.CACHE_VERSION }}-clang_root-${{ github.run_id }}
+          key: ${{ secrets.CACHE_VERSION }}-clang_root
 
       - name: Saving repository cache
         uses: actions/cache/save@main
         if: ${{ always() && matrix.bit == 'x86_64' }}
         with:
           path: src_packages
-          key: ${{ secrets.CACHE_VERSION }}-repository-${{ github.run_id }}
+          key: ${{ secrets.CACHE_VERSION }}-repository
 
       - name: Saving ${{ matrix.bit }} toolchain cache
         uses: actions/cache/save@main
@@ -198,13 +198,13 @@ jobs:
         with:
           path: |
             build_${{ matrix.bit }}
-          key: ${{ secrets.CACHE_VERSION }}-clang-${{ matrix.bit }}_toolchain-${{ github.run_id }}
+          key: ${{ secrets.CACHE_VERSION }}-clang-${{ matrix.bit }}_toolchain
 
       - name: Saving release_${{ matrix.bit }} cache
         uses: actions/cache/save@main
         with:
           path: release_${{ matrix.bit }}
-          key: ${{ secrets.CACHE_VERSION }}-release_${{ matrix.bit }}-${{ github.run_id }}
+          key: ${{ secrets.CACHE_VERSION }}-release_${{ matrix.bit }}
 
   release:
     name: Upload releases
@@ -213,9 +213,9 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
       CURL_RETRIES: "--connect-timeout 60 --retry 999 --retry-delay 5 --retry-all-errors"
-      release_i686_key: ${{ secrets.CACHE_VERSION }}-release_i686-${{ github.run_id }}
-      release_x86_64_key: ${{ secrets.CACHE_VERSION }}-release_x86_64-${{ github.run_id }}
-      release_x86_64_v3_key: ${{ secrets.CACHE_VERSION }}-release_x86_64_v3-${{ github.run_id }}
+      release_i686_key: ${{ secrets.CACHE_VERSION }}-release_i686
+      release_x86_64_key: ${{ secrets.CACHE_VERSION }}-release_x86_64
+      release_x86_64_v3_key: ${{ secrets.CACHE_VERSION }}-release_x86_64_v3
     container:
       image: docker://alpine:latest
 
